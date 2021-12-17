@@ -1,0 +1,72 @@
+name: Continuous Delivery
+on:
+  push:
+    branches:
+      - 'master'
+      - 'stage'
+      - 'production'
+    tags :
+      - '*'
+  workflow_dispatch:
+jobs:
+  build:
+    name: Build, Test, Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v2
+      - name: Set up JDK 14
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 14
+      - name: Cache build
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Prepare API Config
+        run: |
+          echo "$PROD_CONFIG" > api/src/main/resources/application-production.properties
+          echo "$STAG_CONFIG" > api/src/main/resources/application-stage.properties
+          echo "$DEV_CONFIG" > api/src/main/resources/application-development.properties
+        env:
+          PROD_CONFIG: ${{ secrets.PROD_CONFIG }}
+          STAG_CONFIG: ${{ secrets.STAG_CONFIG }}
+          DEV_CONFIG: ${{ secrets.DEV_CONFIG }}
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build
+        run: ./gradlew build --info
+        env:
+          ORG_GRADLE_PROJECT_GitHubPackagesUsername: ${{ github.actor }}
+          ORG_GRADLE_PROJECT_GitHubPackagesPassword: ${{ secrets.CI_TOKEN }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.CI_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.CI_AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Publish Data Language API
+        run: ./gradlew :api:jib --info -Djib.httpTimeout=6000000
+        env:
+          ORG_GRADLE_PROJECT_GitHubPackagesUsername: ${{ github.actor }}
+          ORG_GRADLE_PROJECT_GitHubPackagesPassword: ${{ secrets.CI_TOKEN }}
+      - name: Logout of Amazon ECR
+        if: always()
+        run: docker logout ${{ steps.login-ecr.outputs.registry }}
+      - name: Publish Data Language Model
+        run: ./gradlew :model:publish
+        env:
+          ORG_GRADLE_PROJECT_GitHubPackagesUsername: ${{ github.actor }}
+          ORG_GRADLE_PROJECT_GitHubPackagesPassword: ${{ secrets.CI_TOKEN }}
+      - name: Publish Data Language API Client
+        run: ./gradlew :client-http:publish
+        env:
+          ORG_GRADLE_PROJECT_GitHubPackagesUsername: ${{ github.actor }}
+          ORG_GRADLE_PROJECT_GitHubPackagesPassword: ${{ secrets.CI_TOKEN }}
+

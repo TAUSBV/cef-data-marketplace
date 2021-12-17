@@ -1,0 +1,22 @@
+{
+    "projects": [
+        "5eb9692bf1f9a7763f0590bb"
+    ],
+    "styleguides": [],
+    "components": [
+        {
+            "path": "src/components/Button.vue",
+            "zeplinNames": [
+                "Button / With icon-s",
+                "Button/Without icon-l"
+            ]
+        },
+        {
+            "path": "src/components/Tag.vue",
+            "zeplinNames": [
+                "Elements/Tag"
+            ]
+        }
+
+    ]
+}

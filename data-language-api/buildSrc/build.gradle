@@ -1,0 +1,56 @@
+plugins {
+  id 'java-gradle-plugin'
+  id 'groovy-gradle-plugin'
+}
+
+repositories {
+  mavenCentral()
+}
+
+group = "net.taus.oss"
+version = "git describe --tag --always".execute().text.trim() ?: "0.0.1"
+
+ext {
+  set("queryDslVersion", "4.4.0")
+}
+
+dependencies {
+  implementation gradleApi()
+  implementation "org.testcontainers:mysql:1.15.1"
+  implementation "org.flywaydb:flyway-core:7.8.1"
+  implementation "mysql:mysql-connector-java:8.0.21"
+  implementation "com.querydsl:querydsl-sql:${queryDslVersion}"
+  implementation "com.querydsl:querydsl-sql-codegen:${queryDslVersion}"
+  implementation "com.google.guava:guava:30.1.1-jre"
+  implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
+  implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.3'
+  implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3'
+  implementation "javax.annotation:javax.annotation-api:1.3.2"
+  testImplementation 'junit:junit:4.13'
+}
+
+gradlePlugin {
+  plugins {
+    querydsl {
+      id = 'net.taus.oss.querydsl'
+      implementationClass = 'net.taus.oss.gradle.querydsl.QuerydslPlugin'
+    }
+  }
+}
+
+sourceSets {
+  functionalTest {
+  }
+}
+
+gradlePlugin.testSourceSets(sourceSets.functionalTest)
+configurations.functionalTestImplementation.extendsFrom(configurations.testImplementation)
+
+tasks.register('functionalTest', Test) {
+  testClassesDirs = sourceSets.functionalTest.output.classesDirs
+  classpath = sourceSets.functionalTest.runtimeClasspath
+}
+
+tasks.named('check') {
+  dependsOn(tasks.functionalTest)
+}

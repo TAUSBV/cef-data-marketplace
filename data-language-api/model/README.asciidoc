@@ -1,0 +1,5 @@
+= Data Language Model
+
+This library provides Data Language abstractions, i.e.: translation data.
+
+image::docs/model.png[]

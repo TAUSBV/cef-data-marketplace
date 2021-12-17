@@ -1,0 +1,76 @@
+plugins {
+  id "java"
+  id "idea"
+  id "org.asciidoctor.convert"
+  id "org.springframework.boot"
+  id "com.google.cloud.tools.jib"
+  id "data-language.conventions"
+}
+
+configurations {
+  developmentOnly
+  compileOnly {
+    extendsFrom annotationProcessor
+  }
+}
+
+ext {
+  set("snippetsDir", file("build/generated-snippets"))
+  def environments = [stage: "stag", production: "prod", master: "dev"]
+  def environment = environments["git branch --show-current".execute().text.trim()] ?: "dev"
+  set("environment", environment)
+}
+
+jib {
+  from {
+    image = "openjdk:14-jdk-alpine3.10"
+  }
+  to {
+    image = "203496742437.dkr.ecr.eu-west-1.amazonaws.com/data-language-api-${environment}"
+    tags = ["latest"] << "${version}".toString()
+  }
+  container {
+    jvmFlags = ["-Xms2g", "-Xmx2g", "-Xdebug"]
+  }
+  pluginExtensions {
+    pluginExtension {
+      implementation = 'com.google.cloud.tools.jib.gradle.extension.springboot.JibSpringBootExtension'
+    }
+  }
+}
+
+dependencies {
+  implementation project(":model")
+  platform("org.springframework.boot:spring-boot-dependencies:2.4.4")
+  implementation(
+      platform("org.springframework.boot:spring-boot-dependencies:2.4.4"),
+      implementation("org.springframework.boot:spring-boot-starter-web"),
+      implementation("org.springframework.boot:spring-boot-starter-validation"),
+      implementation("org.springframework.boot:spring-boot-starter-actuator"),
+      testImplementation("org.springframework.boot:spring-boot-starter-test"),
+      testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+  )
+  implementation(
+      platform("org.springframework.data:spring-data-bom:2020.0.0"),
+      compileOnly("org.projectlombok:lombok"),
+      annotationProcessor("org.projectlombok:lombok:1.18.12")
+  )
+  developmentOnly(
+      platform("org.springframework.boot:spring-boot-dependencies:2.4.4"),
+      developmentOnly("org.springframework.boot:spring-boot-devtools")
+  )
+  implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:2.3.0")
+  testImplementation(
+      platform("org.testcontainers:testcontainers-bom:1.15.3"),
+      testImplementation("org.testcontainers:junit-jupiter"),
+      testImplementation("org.testcontainers:mysql"),
+      testImplementation("com.github.javafaker:javafaker:1.0.2")
+  )
+  testImplementation "org.springframework.boot:spring-boot-starter-data-jpa"
+  testImplementation "org.hibernate:hibernate-hikaricp"
+}
+
+asciidoctor {
+  inputs.dir snippetsDir
+  dependsOn test
+}

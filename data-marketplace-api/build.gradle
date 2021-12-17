@@ -1,0 +1,125 @@
+buildscript {
+  dependencies {
+    classpath('com.google.cloud.tools:jib-spring-boot-extension-gradle:0.1.0')
+  }
+}
+
+plugins {
+  id "org.springframework.boot" version "2.4.4"
+  id "io.spring.dependency-management" version "1.0.11.RELEASE"
+  id "org.asciidoctor.convert" version "1.5.8"
+  id "java"
+  id "com.google.cloud.tools.jib" version "2.5.0"
+}
+
+group = "net.taus.data.marketplace"
+version = "git describe --tag --always".execute().text.trim() ?: "0.0.1"
+
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(14)
+  }
+}
+
+ext {
+  set("snippetsDir", file("build/generated-snippets"))
+  set("springBootVersion", "2.4.4")
+  set("springCloudVersion", "2.3.0")
+  def environments = [stage: "stag", production: "prod", master: "dev"]
+  def environment = environments["git branch --show-current".execute().text.trim()] ?: "dev"
+  set("environment", environment)
+}
+
+jib {
+  from {
+    image = "openjdk:14-jdk-alpine3.10"
+  }
+  to {
+    image = "203496742437.dkr.ecr.eu-west-1.amazonaws.com/dmp-api-${environment}"
+    tags = ["latest"] << "${version}".toString()
+  }
+  container {
+    jvmFlags = ["-Xms1g", "-Xmx1g"]
+  }
+  pluginExtensions {
+    pluginExtension {
+      implementation = 'com.google.cloud.tools.jib.gradle.extension.springboot.JibSpringBootExtension'
+    }
+  }
+}
+
+configurations {
+  developmentOnly
+  runtimeClasspath {
+    extendsFrom developmentOnly
+  }
+}
+
+repositories {
+  mavenCentral()
+  maven {
+    name = "GitHubPackages"
+    url = uri("https://maven.pkg.github.com/tausbv/packages")
+    credentials(PasswordCredentials)
+  }
+  maven {
+    name = "Taus Repo"
+    url = uri("http://artifactory.stag.taus.net:8081/artifactory/taus-dqf-repo")
+    allowInsecureProtocol = true
+  }
+}
+
+dependencies {
+  implementation "org.springframework.boot:spring-boot-starter-web"
+  implementation "org.springframework.boot:spring-boot-starter-security"
+  implementation "org.springframework.boot:spring-boot-starter-validation"
+  implementation "org.springframework.boot:spring-boot-starter-aop"
+  implementation "io.awspring.cloud:spring-cloud-starter-aws"
+  implementation "io.awspring.cloud:spring-cloud-starter-aws-messaging"
+  implementation "org.springframework.kafka:spring-kafka"
+  implementation "io.github.resilience4j:resilience4j-spring-boot2:1.6.1"
+  implementation "commons-fileupload:commons-fileupload:1.4"
+  implementation "commons-io:commons-io:2.6"
+  implementation "org.passay:passay:1.6.0"
+  implementation "com.nimbusds:nimbus-jose-jwt:8.3"
+  implementation "net.taus.data.marketplace:data-marketplace-model:1.0.19"
+  implementation "net.taus.payment.broker:payment-broker-client:1.0.1"
+  implementation "net.taus.support.crm:crm-client:1.0.1"
+  implementation "net.taus.corporate.user:corporate-user-service-client:2.0.0"
+  implementation "net.taus.data.tools:translation-memory-parser:0.0.22"
+  implementation "org.apache.commons:commons-text:1.9"
+  implementation "com.google.code.findbugs:jsr305:3.0.2"
+  implementation "com.univocity:univocity-parsers:2.9.1"
+  compileOnly "org.projectlombok:lombok"
+  developmentOnly "org.springframework.boot:spring-boot-devtools"
+  annotationProcessor "org.projectlombok:lombok:1.18.16"
+  annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+  testImplementation "org.springframework.boot:spring-boot-starter-test"
+  testImplementation "io.projectreactor:reactor-test:3.3.4.RELEASE"
+  testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc:2.0.4.RELEASE"
+  testImplementation "org.testcontainers:junit-jupiter"
+  testImplementation "org.testcontainers:mysql"
+  testImplementation "org.testcontainers:kafka"
+}
+
+dependencyManagement {
+  imports {
+    mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+    mavenBom "io.awspring.cloud:spring-cloud-aws-dependencies:${springCloudVersion}"
+    mavenBom "org.testcontainers:testcontainers-bom:1.15.3"
+  }
+}
+
+test {
+  testLogging {
+    events "passed", "skipped", "failed"
+  }
+  outputs.dir snippetsDir
+  useJUnitPlatform()
+  //testLogging.showStandardStreams = true
+}
+
+asciidoctor {
+  inputs.dir snippetsDir
+  dependsOn test
+}

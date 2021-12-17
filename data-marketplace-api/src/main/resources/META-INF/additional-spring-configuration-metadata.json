@@ -1,0 +1,23 @@
+{
+  "properties": [
+    {
+      "name": "app.data_language.received.queue",
+      "type": "java.lang.String",
+      "description": "Description for app.data_language.received.queue."
+    },
+    {
+      "name": "app.assets.remote.protocol",
+      "type": "java.lang.String",
+      "description": "Description for app.assets.remote.protocol."
+    },
+    {
+      "name": "app.assets.remote.path",
+      "type": "java.lang.String",
+      "description": "Description for app.assets.remote.path."
+    },
+    {
+      "name": "app.assets.local.path.prefix",
+      "type": "java.lang.String",
+      "description": "Description for app.assets.local.path.prefix."
+    }
+  ] }

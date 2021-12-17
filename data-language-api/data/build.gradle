@@ -1,0 +1,20 @@
+plugins {
+  id 'java'
+  id "data-language.conventions"
+}
+
+dependencies {
+  implementation (
+      platform("org.springframework.boot:spring-boot-dependencies:2.4.4"),
+      implementation("org.springframework.data:spring-data-jpa"),
+      implementation("com.fasterxml.jackson.core:jackson-databind"),
+      implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310"),
+  )
+  implementation(
+      platform("org.springframework.data:spring-data-bom:2020.0.0"),
+      compileOnly("org.projectlombok:lombok"),
+      annotationProcessor("org.projectlombok:lombok:1.18.12")
+  )
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}

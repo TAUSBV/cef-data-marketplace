@@ -1,0 +1,195 @@
+# This is a example file and should be copied and pasted
+# on this same directory with the name to application.properties,
+# Change the values of keys with CAPITAL values to local environment values.
+# THIS COPIED AND PASTED FILE SHOULD NOT BE COMMITTED TO THE REPOSITORY.
+
+#spring.profiles.active=test-local
+#spring.flyway.enabled=false
+spring.application.name=data-marketplace-api
+spring.servlet.multipart.max-file-size=5GB
+spring.servlet.multipart.max-request-size=5GB
+spring.servlet.multipart.resolve-lazily=true
+spring.mvc.async.request-timeout=240000
+
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
+
+cloud.aws.stack.auto=false
+cloud.aws.region.static=eu-west-1
+cloud.aws.sqs.endpoint=https://sqs.${cloud.aws.region.static}.amazonaws.com
+cloud.aws.mail.region=us-east-1
+spring.cloud.aws.ses.region=us-east-1
+
+app.ui.url=http://datamarketplace.local.taus.net:8081
+app.allowed_origins=http://localhost:8081,\
+  http://localhost:8081/,\
+  http://datamarketplace.local.taus.net:8081,\
+  http://datamarketplace.local.taus.net:8081/
+
+#app.security.auth.holder.domain=
+app.security.auth.holder.secure=false
+app.security.auth.provider.base_url=https://bouncer.dev.taus.net
+app.security.auth.provider.api_key=
+app.security.auth.provider.crypto_key=
+app.security.auth.provider.login_endpoint=${app.security.auth.provider.base_url}/login
+app.security.auth.provider.logout_endpoint=${app.security.auth.provider.base_url}/logout
+app.security.auth.provider.authenticate_endpoint=${app.security.auth.provider.base_url}/authenticate
+app.security.auth.provider.session_lifetime_milliseconds=1800000
+app.security.auth.jwt.secret_key=
+
+app.payment.method.stripe.api_key=
+app.payment.method.stripe.publishable_key=
+app.payment.method.paypal.client_id=
+app.payment.method.paypal.client_secret=
+app.payment.vat_sense.url=https://api.vatsense.com/1.0/validate
+app.payment.vat_sense.api_key=
+support.payment.stripe.onboard.return_url=${app.ui.url}/users/payment-details
+support.payment.stripe.onboard.refresh_url=${app.ui.url}/users/payment-details
+
+corporate.service.data_language.url=http://localhost:8090
+corporate.service.data_language.queue.notifications=dev-data-language-notifications
+corporate.service.data_language.assets.remote.path=file://LOCAL_PATH_TO_STORE_FILES
+
+# Matching Data
+corporate.service.matching_data.queue.notifications=dev-matching-data-notifications
+corporate.service.matching_data.assets.remote.path.requests=file://LOCAL_PATH_TO_STORE_FILES
+corporate.service.matching_data.assets.remote.path.results=file://LOCAL_PATH_TO_STORE_FILES
+corporate.service.matching_data.validations.query.rows.min=2000
+corporate.service.matching_data.validations.query.rows.max=40000
+
+corporate.service.user.api_key=
+corporate.service.user.url=https://www.dev.taus.net/api/v1/user
+corporate.service.user.create.endpoint=registration.php
+corporate.service.user.get.endpoint=data.php
+
+corporate.service.crm.oauthEndpoint=https://api.hubapi.com/oauth/v1/token
+corporate.service.crm.eventEndpoint=https://api.hubapi.com/crm/v3/timeline/events
+corporate.service.crm.contactEndpoint=https://api.hubapi.com/crm/v3/objects/contacts
+corporate.service.crm.formEndpoint=https://api.hubapi.com/marketing/v3/forms
+corporate.service.crm.clientId=
+corporate.service.crm.clientSecret=
+corporate.service.crm.refreshToken=
+corporate.service.crm.newPublicationTemplateId=1044073
+corporate.service.crm.newPurchaseTemplateId=1045606
+corporate.service.crm.newDownloadTemplateId=1046643
+corporate.service.crm.matchingDataTemplateId=1066061
+
+# Payment Service Configuration #
+# ----------------------------- #
+
+corporate.service.payment.host=https://treasurer.dev.taus.net
+corporate.service.payment.api_key=
+corporate.service.payment.list_payments_endpoint=${corporate.service.payment.host}/api/user/payments
+corporate.service.payment.sales_taxes_endpoint=${corporate.service.payment.host}/api/sales/taxes
+corporate.service.payment.profile_endpoint=${corporate.service.payment.host}/api/user-details/
+corporate.service.payment.days_to_refund = 14
+
+# End Payment Service Configuration #
+# --------------------------------- #
+
+# Circuit Breaker Configuration #
+# ----------------------------- #
+
+# Configures the size of the sliding window which is used to record the outcome of calls when the CircuitBreaker is closed.
+# slidingWindowSize configures the size of the sliding window. The slidingWindowSize must be greater than 0.
+resilience4j.circuitbreaker.configs.default.slidingWindowSize=1
+
+# Configures the minimum number of calls which are required (per sliding window period) before the CircuitBreaker can calculate
+# the error rate. For example, if minimumNumberOfCalls is 10, then at least 10 calls must be recorded, before the failure rate can
+# be calculated. If only 9 calls have been recorded, the CircuitBreaker will not transition to open, even if all 9 calls have failed.
+resilience4j.circuitbreaker.configs.default.minimumNumberOfCalls=1
+
+# Configures the failure rate threshold in percentage. If the failure rate is equal to or greater than the threshold,
+# the CircuitBreaker transitions to open and starts short-circuiting calls. The threshold must be greater than 0 and not greater than 100
+resilience4j.circuitbreaker.configs.default.failureRateThreshold=1
+
+# Configures an interval function with a fixed wait duration which controls how long the CircuitBreaker should stay open,
+# before it switches to half open. In seconds.
+resilience4j.circuitbreaker.configs.default.waitDurationInOpenState=30s
+
+# Configures the duration threshold above which calls are considered as slow and increase the slow calls percentage. In seconds.
+resilience4j.circuitbreaker.configs.default.slowCallDurationThreshold=3s
+
+# Configures a threshold in percentage. The CircuitBreaker considers a call as slow when the call duration is greater than
+# slowCallDurationThreshold(Duration). When the percentage of slow calls is equal to or greater than the threshold, the CircuitBreaker
+# transitions to open and starts short-circuiting calls.
+resilience4j.circuitbreaker.configs.default.slowCallRateThreshold=50
+
+# Configures the number of permitted calls when the CircuitBreaker is half open. The size must be greater than 0. Default size is 10.
+resilience4j.circuitbreaker.configs.default.permittedNumberOfCallsInHalfOpenState=1
+
+# End Circuit Breaker Configuration #
+# --------------------------------- #
+
+# Kafka consumer configuration #
+# ---------------------------- #
+#A list of host/port pairs to use for establishing the initial connection to the Kafka cluster for the consumer.
+spring.kafka.consumer.bootstrap-servers=localhost:9092
+
+#A unique string that identifies the consumer group this consumer belongs to.
+spring.kafka.consumer.group-id=dmp-consumer
+
+# What to do when there is no initial offset in Kafka or if the current offset does not exist any more on the server (e.g. because that data has been deleted):
+# earliest: automatically reset the offset to the earliest offset
+# latest: automatically reset the offset to the latest offset
+# none: throw exception to the consumer if no previous offset is found for the consumer's group
+# anything else: throw exception to the consumer.
+spring.kafka.consumer.auto-offset-reset=earliest
+
+# Deserializer class for key that implements the org.apache.kafka.common.serialization.Deserializer interface.
+spring.kafka.consumer.key-deserializer=org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+
+# Deserializer class for value that implements the org.apache.kafka.common.serialization.Deserializer interface.
+spring.kafka.consumer.value-deserializer=org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+spring.json.trusted.packages=net.taus.data.marketplace.api.purchase
+spring.kafka.properties.spring.deserializer.key.delegate.class=org.apache.kafka.common.serialization.StringDeserializer
+spring.kafka.properties.spring.deserializer.value.delegate.class=org.apache.kafka.common.serialization.StringDeserializer
+
+# The base amount of time to wait before attempting to reconnect to a given host.
+spring.kafka.properties.reconnect.backoff.ms=30000
+
+# The maximum amount of time in milliseconds to wait when reconnecting to a broker that has repeatedly failed to connect.
+# If provided, the backoff per host will increase exponentially for each consecutive connection failure, up to this maximum.
+spring.kafka.properties.reconnect.backoff.max.ms=60000
+
+# The topic we subscribe to listen for sale status changes
+app.kafka.consumer.topics.sale_status=sale-status
+
+# End Kafka consumer configuration #
+# -------------------------------- #
+
+# Kafka producer configuration #
+# ---------------------------- #
+
+#A list of host/port pairs to use for establishing the initial connection to the Kafka cluster for the producer.
+spring.kafka.producer.bootstrap-servers=localhost:9092
+
+# An upper bound on the time to report success or failure after a call to send() returns. This limits the total time that a record
+# will be delayed prior to sending, the time to await acknowledgement from the broker (if expected), and the time allowed for
+# retryable send failures. The producer may report failure to send a record earlier than this config if either an unrecoverable error
+# is encountered, the retries have been exhausted, or the record is added to a batch which reached an earlier delivery expiration
+# deadline. The value of this config should be greater than or equal to the sum of request.timeout.ms (default 30000) and linger.ms (default 0ms).
+spring.kafka.producer.delivery.timeout.ms=3600000
+
+# The base amount of time to wait before attempting to reconnect to a given host
+spring.kafka.producer.reconnect.backoff.ms=30000
+
+# The maximum amount of time in milliseconds to wait when reconnecting to a broker that has repeatedly failed to connect.
+# If provided, the backoff per host will increase exponentially for each consecutive connection failure, up to this maximum.
+spring.kafka.producer.reconnect.backoff.max.ms=60000
+
+spring.kafka.producer.key-serializer=org.apache.kafka.common.serialization.StringSerializer
+spring.kafka.producer.value-serializer=org.springframework.kafka.support.serializer.JsonSerializer
+
+# The amount of time we wait before we trigger a warning when a producer is failing to connect and publish to a broker
+app.kafka.producer.reconnect.warning.ms=600000
+
+# Topic that we use to publish purchases and issue invoices - Replace ### with dev/stag/prod for the respective environment
+app.kafka.producer.topics.sale_invoice=###.sale-create
+
+# Topic that we use to publish payments requests - Replace ### with dev/stag/prod for the respective environment
+app.kafka.producer.topics.payment_create=###.payment-create
+
+# End Kafka producer configuration #
+# -------------------------------- #

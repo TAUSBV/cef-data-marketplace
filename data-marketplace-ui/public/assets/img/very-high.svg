@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="247" height="23" viewBox="0 0 247 23">
+    <g fill="none" fill-rule="evenodd">
+        <text fill="#1E1E2E" font-family="Roboto-Regular, Roboto" font-size="16" letter-spacing=".267" opacity=".6" transform="translate(0 .163)">
+            <tspan x="84" y="15">Very High Availability</tspan>
+        </text>
+        <g fill="#FC0">
+            <path d="M12 0v16H4c-2.21 0-4-1.79-4-4V4c0-2.21 1.79-4 4-4h8z" transform="translate(0 .163) translate(0 3)"/>
+            <path d="M14 2L30 2 30 14 14 14z" transform="translate(0 .163) translate(0 3) rotate(90 22 8)"/>
+            <path d="M30 2L46 2 46 14 30 14z" transform="translate(0 .163) translate(0 3) rotate(90 38 8)"/>
+            <path d="M46 2L62 2 62 14 46 14z" transform="translate(0 .163) translate(0 3) rotate(90 54 8)"/>
+            <path d="M76 4v8c0 2.21-1.79 4-4 4h-8V0h8c2.21 0 4 1.79 4 4z" transform="translate(0 .163) translate(0 3)"/>
+        </g>
+    </g>
+</svg>

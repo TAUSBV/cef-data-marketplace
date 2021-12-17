@@ -1,0 +1,6 @@
+= Data Language API
+
+Endpoints
+
+Translation Documents
+{snippets}/

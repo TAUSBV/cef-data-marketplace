@@ -1,0 +1,40 @@
+plugins {
+  id 'java'
+  id 'idea'
+}
+
+group = "net.taus.data.language"
+version = "git describe --tag --always".execute().text.trim() ?: "0.0.1"
+
+repositories {
+  mavenCentral()
+  maven {
+    name = "GitHubPackages"
+    url = uri("https://maven.pkg.github.com/tausbv/packages")
+    credentials(PasswordCredentials)
+  }
+}
+
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(14)
+  }
+  withJavadocJar()
+  withSourcesJar()
+}
+
+idea {
+  module {
+    sourceDirs += file("generated/")
+    generatedSourceDirs += file("generated/")
+  }
+}
+
+dependencies {
+  testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+  testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+tasks.named("test") {
+  useJUnitPlatform()
+}

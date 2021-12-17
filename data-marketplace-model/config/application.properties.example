@@ -1,0 +1,15 @@
+# This is a example file and should be copied and pasted
+# on this same directory with the name to application.properties,
+# Change the values of keys with CAPITAL values to local environment values.
+# THIS COPIED AND PASTED FILE SHOULD NOT BE COMMITTED TO THE REPOSITORY.
+
+# Activating this profiles makes the test run against
+# to the host database and will not spin up a database instance for tests
+spring.profiles.active=local-test
+spring.datasource.url=MYSQL_URL
+spring.datasource.username=MYSQL_USERNAME
+spring.datasource.password=MYSQL_PASSWORD
+
+app.price_suggestion.base_word_price=1
+app.price_suggestion.availability_modifier.minimum_word_count=1000000
+app.price_suggestion.availability_modifier.minimum_number_of_language_data_count_entries=40

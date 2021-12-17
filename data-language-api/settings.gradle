@@ -1,0 +1,9 @@
+//includeBuild("/Users/anderson/Projects/oss/querydsl-plugin"){
+//  dependencySubstitution {
+//    substitute module("net.taus.oss:querydsl-plugin") with project(":querydsl")
+//  }
+//}
+//
+rootProject.name = 'data-language-api'
+
+include 'data', 'client-http', 'model', 'api'

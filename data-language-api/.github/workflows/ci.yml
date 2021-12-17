@@ -1,0 +1,50 @@
+name: Continuous Integration
+on:
+  push:
+    branches:
+      - '*'
+      - '*/*'
+      - '!master'
+      - '!stage'
+      - '!production'
+  workflow_dispatch:
+jobs:
+  build:
+    name: Build, Test, Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v2
+      - name: Set up JDK 14
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 14
+      - name: Cache build
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Prepare Application Config
+        run: |
+          echo "$DEV_CONFIG" > api/src/main/resources/application.properties
+        env:
+          APP_PROPS: ${{ secrets.DEV_CONFIG }}
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build
+        run: ./gradlew build --info
+        env:
+          ORG_GRADLE_PROJECT_GitHubPackagesUsername: ${{ github.actor }}
+          ORG_GRADLE_PROJECT_GitHubPackagesPassword: ${{ secrets.CI_TOKEN }}
+      - name: Publish Data Language Model
+        run: ./gradlew :model:publish
+        env:
+          ORG_GRADLE_PROJECT_GitHubPackagesUsername: ${{ github.actor }}
+          ORG_GRADLE_PROJECT_GitHubPackagesPassword: ${{ secrets.CI_TOKEN }}
+      - name: Publish Data Language Client
+        run: ./gradlew :client-http:publish
+        env:
+          ORG_GRADLE_PROJECT_GitHubPackagesUsername: ${{ github.actor }}
+          ORG_GRADLE_PROJECT_GitHubPackagesPassword: ${{ secrets.CI_TOKEN }}

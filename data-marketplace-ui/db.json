@@ -1,0 +1,59 @@
+{
+  "document": [],
+  "domains": [
+    {
+      "id": 0,
+      "description": "domain 1"
+    },
+    {
+      "id": 1,
+      "description": "domain 2"
+    }
+  ],
+  "content_types": [
+    {
+      "id": 0,
+      "description": "content type 1"
+    },
+    {
+      "id": 1,
+      "description": "content type 2"
+    }
+  ],
+  "publications": [
+    {
+      "id": "1",
+      "document": {
+        "domain": "Public Sector/Non-Profit",
+        "contentType": "Training Material",
+        "name": "ostechnix.txt",
+        "size": 3608359,
+        "id": "22",
+        "sourceLanguage": "PT_BR",
+        "sourceLanguageWords": 20340,
+        "targetLanguage": "ES_ES",
+        "targetLanguageWords": 20350
+      },
+      "currentStatus": {
+        "id": "33",
+        "type": "PUBLISHED"
+      }
+    },
+    {
+      "id": "t-tjBGG"
+    },
+    {
+      "id": "rDyEfSR"
+    },
+    {
+      "id": "5NSsfLn"
+    }
+  ],
+  "publish": {
+    "publicationId": "11",
+    "pricePerWord": "100"
+  },
+  "checkStatus": {
+    "type": "PROCESSING"
+  }
+}

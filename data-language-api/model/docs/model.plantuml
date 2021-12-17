@@ -1,0 +1,45 @@
+@startuml
+skinparam monochrome false
+'skinparam ranksep 20
+skinparam dpi 150
+'skinparam arrowThickness 0.7
+skinparam packageTitleAlignment left
+skinparam usecaseBorderThickness 0.4
+'skinparam defaultFontSize 12
+skinparam rectangleBorderThickness 1
+
+title Data Language Model
+
+together {
+    class translation_documents {
+      created_at: timestamp
+    }
+    class translation_units {
+      quality: String [HIGH, LOW]
+      reference_id: long [null, number]
+      sequence: int
+    }
+    class translation_variants
+}
+
+together {
+    class language_data_characteristics {
+        id: long
+        created_at: date
+        price_per_word: double
+    }
+    class domains
+    class content_types
+    class statistics
+}
+
+translation_documents *--> translation_units
+translation_documents --> statistics
+translation_documents *--> language_data_characteristics
+translation_units *-> language_data_characteristics
+translation_units *--> translation_variants
+
+language_data_characteristics *--> domains
+language_data_characteristics *--> content_types
+
+@enduml

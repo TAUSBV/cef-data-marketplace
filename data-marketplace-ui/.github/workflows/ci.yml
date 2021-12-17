@@ -1,0 +1,22 @@
+name: Continuous Integration
+on:
+  push:
+    branches:
+      - '*'
+      - '*/*'
+      - '!master'
+      - '!stage'
+      - '!production'
+jobs:
+  build:
+    name: Build, Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v2
+      - name: Build
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - run: npm ci
+      - run: npm run build

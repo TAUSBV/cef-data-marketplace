@@ -1,0 +1,68 @@
+name: Continuous Delivery
+on:
+  push:
+    branches:
+      - 'master'
+      - 'stage'
+      - 'production'
+  workflow_dispatch:
+jobs:
+  build:
+    name: Build, Test, Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v2
+      - name: Set up JDK 14
+        uses: actions/setup-java@v1.4.3
+        with:
+          java-version: 14
+      - name: Cache build
+        uses: actions/cache@v2
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Prepare Production Application Config
+        if: github.ref == 'refs/heads/production'
+        run: |
+          echo "$APP_PROPS" > src/main/resources/application.properties
+        env:
+          APP_PROPS: ${{ secrets.PROD_CONFIG }}
+      - name: Prepare Stage Application Config
+        if: github.ref == 'refs/heads/stage'
+        run: |
+          echo "$APP_PROPS" > src/main/resources/application.properties
+        env:
+          APP_PROPS: ${{ secrets.STAG_CONFIG }}
+      - name: Prepare Dev Application Config
+        if: github.ref == 'refs/heads/master'
+        run: |
+          echo "$APP_PROPS" > src/main/resources/application.properties
+        env:
+          APP_PROPS: ${{ secrets.DEV_CONFIG }}
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build
+        run: ./gradlew build --info
+        env:
+          ORG_GRADLE_PROJECT_GitHubPackagesUsername: ${{ github.actor }}
+          ORG_GRADLE_PROJECT_GitHubPackagesPassword: ${{ secrets.CI_TOKEN }}
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.CI_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.CI_AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+      - name: Publish Image
+        run: ./gradlew jib --info -Djib.httpTimeout=6000000
+        env:
+          ORG_GRADLE_PROJECT_GitHubPackagesUsername: ${{ github.actor }}
+          ORG_GRADLE_PROJECT_GitHubPackagesPassword: ${{ secrets.CI_TOKEN }}
+      - name: Logout of Amazon ECR
+        if: always()
+        run: docker logout ${{ steps.login-ecr.outputs.registry }}

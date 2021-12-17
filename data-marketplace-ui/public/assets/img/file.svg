@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="70" height="90" viewBox="0 0 70 90">
+    <g fill="none" fill-rule="evenodd">
+        <path fill="#2DA4DF" fill-rule="nonzero" d="M41.183 23.547V0H6.555C4.253 0 2.4 1.853 2.4 4.155v80.337c0 2.303 1.853 4.155 4.155 4.155H64.73c2.303 0 4.155-1.852 4.155-4.155v-56.79H45.338c-2.285 0-4.155-1.87-4.155-4.155zm27.702-2.441v1.056H46.724V0h1.056c1.108 0 2.164.433 2.943 1.212l16.95 16.968c.78.779 1.212 1.835 1.212 2.926z" transform="translate(.5 .5)"/>
+        <path fill="#CFEFFF" stroke="#FFF" stroke-width="2.16" d="M60.667 42.524c.956 0 1.733.874 1.733 1.956v25.435c0 1.082-.777 1.956-1.733 1.956H1.733C.777 71.871 0 70.997 0 69.915V44.48c0-1.082.777-1.956 1.733-1.956h58.934z" transform="translate(.5 .5)"/>
+        <text fill="#2DA4DF" font-family="Roboto-Regular, Roboto" font-size="9.6" letter-spacing=".087" transform="translate(.5 .5)">
+            <tspan x="15.6" y="60.393">TMX</tspan>
+        </text>
+    </g>
+</svg>
